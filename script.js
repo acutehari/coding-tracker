@@ -144,29 +144,33 @@ const data = [
   }
 ];
 
+// --------------------------------------
+// 2️⃣ Variables
+// --------------------------------------
 const savedProgress = JSON.parse(localStorage.getItem("trackerData")) || {};
 const solvedDates = JSON.parse(localStorage.getItem("solvedDates")) || {};
-
 const trackerDiv = document.getElementById("tracker");
 const progressBar = document.getElementById("progress-bar");
 const resetBtn = document.getElementById("reset-btn");
 const daysCompletedSpan = document.getElementById("days-completed");
 const problemsSolvedSpan = document.getElementById("problems-solved");
-
 const totalTasks = data.length * 3;
 let completedTasks = Object.values(savedProgress).filter(v => v).length;
 
-// Render tracker
+// --------------------------------------
+// 3️⃣ Render Tracker
+// --------------------------------------
 data.forEach((item) => {
   const dayDiv = document.createElement("div");
   dayDiv.className = "day";
   dayDiv.id = `day-${item.day}`;
 
+  const dayLocked = !isDayUnlocked(item.day);
   const dateInfo = solvedDates[item.day]
     ? `<div class="solved-date">📅 Solved on: ${solvedDates[item.day]}</div>`
     : `<div class="solved-date">Not yet solved</div>`;
 
-  dayDiv.innerHTML = `<h2>📅 Day ${item.day}</h2>${dateInfo}`;
+  dayDiv.innerHTML = `<h2>${dayLocked ? "🔒" : "📅"} Day ${item.day}</h2>${dateInfo}`;
 
   const problems = [
     ...item.python.map(p => ({ title: `🐍 ${p.name}`, key: `day${item.day}-py-${p.name}`, link: p.link })),
@@ -180,6 +184,7 @@ data.forEach((item) => {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = savedProgress[prob.key] || false;
+    checkbox.disabled = dayLocked;
 
     const link = document.createElement("a");
     link.textContent = prob.title;
@@ -201,7 +206,7 @@ data.forEach((item) => {
       }
 
       updateProgress();
-      saveDateIfComplete(item.day);
+      unlockNextDayIfCompleted(item.day);
     });
 
     taskDiv.appendChild(checkbox);
@@ -212,7 +217,9 @@ data.forEach((item) => {
   trackerDiv.appendChild(dayDiv);
 });
 
-// Update progress bar
+// --------------------------------------
+// 4️⃣ Progress bar + Summary
+// --------------------------------------
 function updateProgress() {
   const percent = Math.round((completedTasks / totalTasks) * 100);
   progressBar.style.width = percent + "%";
@@ -231,8 +238,21 @@ function updateProgress() {
 }
 updateProgress();
 
-// Save date when day completed
-function saveDateIfComplete(day) {
+// --------------------------------------
+// 5️⃣ Unlock logic + Date Save
+// --------------------------------------
+function isDayUnlocked(day) {
+  if (day === 1) return true;
+  const prevDay = day - 1;
+  const prevDayTasks = data.find(d => d.day === prevDay);
+  const prevDayKeys = [
+    ...prevDayTasks.python.map(p => `day${prevDay}-py-${p.name}`),
+    ...prevDayTasks.sql.map(p => `day${prevDay}-sql-${p.name}`)
+  ];
+  return prevDayKeys.every(key => savedProgress[key]);
+}
+
+function unlockNextDayIfCompleted(day) {
   const thisDay = data.find(d => d.day === day);
   const thisDayKeys = [
     ...thisDay.python.map(p => `day${day}-py-${p.name}`),
@@ -240,23 +260,34 @@ function saveDateIfComplete(day) {
   ];
 
   const isComplete = thisDayKeys.every(k => savedProgress[k]);
-  if (isComplete && !solvedDates[day]) {
-    const today = new Date().toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-    solvedDates[day] = today;
-    localStorage.setItem("solvedDates", JSON.stringify(solvedDates));
 
-    const dayElement = document.getElementById(`day-${day}`);
-    const dateElement = dayElement.querySelector(".solved-date");
-    if (dateElement) dateElement.textContent = `📅 Solved on: ${today}`;
+  if (isComplete) {
+    if (!solvedDates[day]) {
+      const today = new Date().toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+      solvedDates[day] = today;
+      localStorage.setItem("solvedDates", JSON.stringify(solvedDates));
+
+      const dayElement = document.getElementById(`day-${day}`);
+      const dateElement = dayElement.querySelector(".solved-date");
+      if (dateElement) dateElement.textContent = `📅 Solved on: ${today}`;
+    }
+
+    const nextDiv = document.getElementById(`day-${day + 1}`);
+    if (nextDiv) {
+      nextDiv.querySelectorAll("input").forEach(i => (i.disabled = false));
+      nextDiv.querySelector("h2").innerHTML = `📅 Day ${day + 1}`;
+    }
   }
   updateProgress();
 }
 
-// Reset progress
+// --------------------------------------
+// 6️⃣ Reset progress
+// --------------------------------------
 resetBtn.addEventListener("click", () => {
   if (confirm("Reset all progress and dates?")) {
     localStorage.removeItem("trackerData");
@@ -266,7 +297,7 @@ resetBtn.addEventListener("click", () => {
 });
 
 // --------------------------------------
-// 🌙 Dark/Light Theme Toggle with Toast
+// 🌙 7️⃣ Dark/Light Theme + Toast
 // --------------------------------------
 const toggleBtn = document.getElementById("theme-toggle");
 const toast = document.getElementById("toast");
