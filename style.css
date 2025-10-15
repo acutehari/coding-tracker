@@ -7,7 +7,7 @@
   --shadow: rgba(0, 0, 0, 0.15);
 }
 
-/* Dark theme */
+/* 🌙 Dark theme */
 body.dark {
   --bg-color: linear-gradient(135deg, #1c1b29, #2e2c45);
   --text-color: #f1f1f1;
@@ -17,14 +17,14 @@ body.dark {
   --shadow: rgba(0, 0, 0, 0.4);
 }
 
-/* General */
+/* General layout */
 body {
   font-family: "Poppins", sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
   margin: 0;
   padding: 20px;
-  transition: 0.4s ease;
+  transition: background 0.6s ease, color 0.6s ease;
 }
 
 /* Header */
@@ -39,12 +39,16 @@ body {
   background: var(--primary);
   border: none;
   color: white;
-  font-size: 20px;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  font-size: 16px;
+  border-radius: 10px;
+  padding: 8px 15px;
   cursor: pointer;
+  transition: all 0.3s ease;
   box-shadow: 0 4px 10px var(--shadow);
+}
+
+#theme-toggle:hover {
+  transform: scale(1.05);
 }
 
 /* Summary */
@@ -101,13 +105,6 @@ body {
 
 .day:hover {
   transform: translateY(-3px);
-}
-
-/* Locked day */
-.locked {
-  filter: grayscale(100%);
-  opacity: 0.6;
-  pointer-events: none;
 }
 
 /* Tasks */
@@ -169,3 +166,27 @@ body.dark .solved-date {
   color: #aaa;
 }
 
+/* ✨ Toast Notification */
+.toast {
+  visibility: hidden;
+  min-width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.5s, bottom 0.5s;
+  z-index: 1000;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
