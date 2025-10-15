@@ -1,0 +1,171 @@
+:root {
+  --bg-color: linear-gradient(135deg, #f3f5ff, #dce3ff);
+  --text-color: #333;
+  --card-bg: #ffffff;
+  --primary: #4a47a3;
+  --progress-bg: #4a47a3;
+  --shadow: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark theme */
+body.dark {
+  --bg-color: linear-gradient(135deg, #1c1b29, #2e2c45);
+  --text-color: #f1f1f1;
+  --card-bg: #2b2b3d;
+  --primary: #a09fff;
+  --progress-bg: #6c63ff;
+  --shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* General */
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  transition: 0.4s ease;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#theme-toggle {
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-size: 20px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px var(--shadow);
+}
+
+/* Summary */
+#summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  background: var(--primary);
+  color: white;
+  border-radius: 10px;
+  width: 80%;
+  margin: 20px auto;
+  padding: 15px;
+  font-size: 18px;
+  box-shadow: 0 4px 10px var(--shadow);
+}
+
+.summary-item {
+  font-weight: 600;
+}
+
+/* Progress bar */
+.progress-container {
+  width: 80%;
+  margin: 0 auto 20px;
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 25px;
+}
+
+#progress-bar {
+  height: 25px;
+  width: 0%;
+  background-color: var(--progress-bg);
+  color: white;
+  text-align: center;
+  line-height: 25px;
+  transition: width 0.4s ease;
+  border-radius: 10px;
+}
+
+/* Day cards */
+.day {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin: 15px auto;
+  width: 80%;
+  box-shadow: 0 3px 15px var(--shadow);
+  transition: transform 0.3s ease, background 0.4s ease;
+}
+
+.day:hover {
+  transform: translateY(-3px);
+}
+
+/* Locked day */
+.locked {
+  filter: grayscale(100%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Tasks */
+.task {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.task a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.task a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.task input {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.done {
+  text-decoration: line-through;
+  color: gray;
+}
+
+/* Buttons */
+.buttons {
+  text-align: center;
+}
+
+#reset-btn {
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+#reset-btn:hover {
+  background-color: #e04e4e;
+}
+
+/* 🗓️ Solved Date Display */
+.solved-date {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+body.dark .solved-date {
+  color: #aaa;
+}
+
